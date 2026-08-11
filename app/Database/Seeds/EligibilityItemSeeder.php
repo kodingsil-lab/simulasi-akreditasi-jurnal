@@ -1,0 +1,4 @@
+<?php
+namespace App\Database\Seeds;
+use CodeIgniter\Database\Seeder;
+class EligibilityItemSeeder extends Seeder { public function run(){ $items=[['awal','Validitas laman jurnal'],['awal','Validitas nama jurnal dan penerbit sesuai ISSN'],['awal','Kesesuaian jenis dan waktu usulan'],['awal','Frekuensi penerbitan dan keberkalaan tiga tahun terakhir'],['awal','Pencantuman peringkat dan masa berlaku'],['awal','Laman etika publikasi'],['awal','Informasi biaya pemrosesan artikel'],['awal','DOI aktif pada setiap artikel'],['awal','Teks penuh tersedia pada setiap artikel'],['awal','Keragaman afiliasi editor dan mitra bestari'],['awal','Kredensial dan peran editor tersedia'],['kelayakan','Setiap artikel telah melalui penelaahan mitra bestari'],['kelayakan','Validitas dan integritas penerbit serta kepatuhan etika']]; foreach($items as $i=>$item)$this->db->table('eligibility_items')->insert(['section'=>$item[0],'label'=>$item[1],'sort_order'=>$i+1]);} }

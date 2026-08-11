@@ -1,0 +1,8 @@
+Options -Indexes
+ServerSignature Off
+RewriteEngine On
+
+# Keep direct requests for files and directories available.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
