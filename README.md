@@ -85,14 +85,13 @@ Kemudian jalankan:
 
 ```powershell
 php spark db:seed UserSeeder
-php spark db:seed LeksikonDummySeeder
 ```
 
 Untuk membuat akun superadmin/operator production, gunakan email khusus dan ubah perannya menjadi:
 
 ```ini
 seed.adminName = 'Super Admin'
-seed.adminEmail = 'superadmin@domain-anda.ac.id'
+seed.adminEmail = 'superadmin@example.org'
 seed.adminPassword = 'gunakan-kata-sandi-yang-kuat'
 seed.adminRole = 'super_admin'
 ```
@@ -111,12 +110,14 @@ Peringatan mengenai driver code coverage dapat diabaikan selama seluruh test dan
 
 ## Deploy ke Hostinger
 
-Domain produksi yang disiapkan oleh script adalah `https://simulasi-arjuna.unisap.ac.id/`. Pastikan subdomain sudah dibuat di hPanel, SSL aktif, PHP 8.2 atau lebih baru dipilih, serta database MySQL sudah tersedia.
+Script dalam folder `deploy` dapat digunakan sebagai dasar deployment pada Hostinger. Sebelum digunakan, sesuaikan nilai `REPOSITORY_URL` dan `DOMAIN` pada `deploy/hostinger-deploy.sh`, serta `SOURCE_URL` pada `deploy/hostinger-bootstrap.sh` dengan repositori dan domain tujuan.
+
+Pastikan domain atau subdomain sudah dibuat di hPanel, SSL aktif, PHP 8.2 atau lebih baru dipilih, dan database MySQL sudah tersedia. Contoh domain production yang digunakan dalam dokumentasi ini adalah `https://jurnal.example.org/`.
 
 Masuk ke Hostinger melalui SSH, kemudian jalankan:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/kodingsil-lab/simulasi-akreditasi-jurnal/main/deploy/hostinger-bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/PEMILIK-REPOSITORI/NAMA-REPOSITORI/main/deploy/hostinger-bootstrap.sh | bash
 ```
 
 Pada eksekusi pertama, script membuat konfigurasi privat di:
@@ -147,7 +148,7 @@ if [ -h writable ]; then unlink writable; fi
 mkdir -p writable
 git restore --source=HEAD --worktree -- writable
 cd ~
-curl -fsSL https://raw.githubusercontent.com/kodingsil-lab/simulasi-akreditasi-jurnal/main/deploy/hostinger-bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/PEMILIK-REPOSITORI/NAMA-REPOSITORI/main/deploy/hostinger-bootstrap.sh | bash
 ```
 
 Perintah tersebut hanya memulihkan placeholder `writable` milik Git. Data runtime tetap berada di `~/apps/simulasi-akreditasi-jurnal/shared/writable` dan tidak terhapus.
