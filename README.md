@@ -96,6 +96,36 @@ composer test
 
 Peringatan mengenai driver code coverage dapat diabaikan selama seluruh test dan assertion berstatus berhasil.
 
+## Deploy ke Hostinger
+
+Domain produksi yang disiapkan oleh script adalah `https://simulasi-arjuna.unisap.ac.id/`. Pastikan subdomain sudah dibuat di hPanel, SSL aktif, PHP 8.2 atau lebih baru dipilih, serta database MySQL sudah tersedia.
+
+Masuk ke Hostinger melalui SSH, kemudian jalankan:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kodingsil-lab/simulasi-akreditasi-jurnal/main/deploy/hostinger-bootstrap.sh | bash
+```
+
+Pada eksekusi pertama, script membuat konfigurasi privat di:
+
+```text
+~/apps/simulasi-akreditasi-jurnal/shared/.env
+```
+
+Edit konfigurasi tersebut dan isi nama database, username, serta password dari hPanel:
+
+```bash
+nano ~/apps/simulasi-akreditasi-jurnal/shared/.env
+```
+
+Setelah disimpan, jalankan deploy kembali:
+
+```bash
+~/hostinger-deploy.sh
+```
+
+Untuk pembaruan berikutnya, cukup push perubahan ke branch `main`, masuk melalui SSH, lalu jalankan kembali perintah terakhir. Script mempertahankan `.env`, sesi, log, cache, dan unggahan pengguna di folder `shared`.
+
 ## Keamanan dan pemisahan data
 
 Setiap akun pengelola hanya dapat mengakses jurnal yang ditugaskan kepadanya. Pembatasan diterapkan pada controller dan query, bukan hanya pada menu.

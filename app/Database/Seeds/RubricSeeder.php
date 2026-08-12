@@ -1,4 +1,62 @@
 <?php
+
 namespace App\Database\Seeds;
+
 use CodeIgniter\Database\Seeder;
-class RubricSeeder extends Seeder { public function run(){ $data=['A|Konsistensi Identitas Jurnal|2|2,1,0','B.1|Mitra Bestari|6|6,4,2,1,0','B.2|Mutu Telaah|4|4,2,0','B.3|Tim Editor|5|5,3,2,1','B.4|Keberagaman Penulis|6|6,4,2,1,0','B.5|Pengelolaan Artikel|1|1,0.5,0','C.1|Kebijakan Peer Review|2|2,1,0','C.2|Author Guidelines|1|1,0.5,0','C.3|Kebijakan AI|1|1,0.5,0','C.4|Kelengkapan Laman/COPE|3|3,2,1,0','D.1|Jadwal Penerbitan|2|2,1.5,1,0.5,0','D.2|Sistem Penomoran|1|1,0.5,0','E.1|Sitasi|6|6,4,3,2,1,0','E.2|Visibilitas|6|6,4,3,2,1','F.1|Judul Artikel|2|2,1,0','F.2|Abstrak|3|3,2,0','F.3|Kata Kunci|1|1,0.5,0','F.4|Kebaruan/Research Gap|7|7,5,3,1','F.5|Analisis dan Sintesis|8|8,6,4,1','F.6|Penyimpulan|5|5,3,1','F.7|Sumber Primer|3|3,2,1,0.5','F.8|Kemutakhiran Pustaka|3|3,2,1','F.9|Cakupan Keilmuan|2|2,1.5,1,0.5','G.1|Kelengkapan PDF/Galley|3|3,2,1,0.5','G.2|Penulis dan Afiliasi|1|1,0.5,0','G.3|Sistematika|2|2,1,0.5,0','G.4|Instrumen Pendukung|4|4,2,0','G.5|Pengacuan dan Daftar Pustaka|3|3,2,0','G.6|Bahasa|4|4,3,1,0','G.7|Penyuntingan dan Tata Letak|3|3,2,1'];foreach($data as $n=>$line){[$code,$label,$max,$scores]=explode('|',$line);$id=$this->db->table('rubric_items')->insert(['code'=>$code,'category'=>$code[0],'label'=>$label,'max_score'=>$max,'sort_order'=>$n+1],true);foreach(explode(',',$scores) as $score)$this->db->table('rubric_options')->insert(['rubric_item_id'=>$id,'score'=>$score,'indicator'=>'Nilai '.$score.' sesuai indikator pada Pemetaan Kriteria Minimum dan Rubrik Penilaian 2026.']);} } }
+use Config\Rubric2026;
+
+class RubricSeeder extends Seeder
+{
+    public function run()
+    {
+        $rubric = new Rubric2026();
+        $this->db->transStart();
+
+        foreach ($rubric->items as $index => $definition) {
+            $code = (string) $index;
+            $item = $this->db->table('rubric_items')->where('code', $code)->get()->getRowArray();
+            $values = [
+                'category'   => substr($code, 0, 1),
+                'label'      => $definition['label'],
+                'max_score'  => $definition['max'],
+                'sort_order' => array_search($code, array_keys($rubric->items), true) + 1,
+            ];
+
+            if ($item === null) {
+                $this->db->table('rubric_items')->insert(['code' => $code] + $values);
+                $itemId = (int) $this->db->insertID();
+            } else {
+                $itemId = (int) $item['id'];
+                $this->db->table('rubric_items')->where('id', $itemId)->update($values);
+                $this->db->table('rubric_options')->where('rubric_item_id', $itemId)->delete();
+            }
+
+            foreach ($definition['options'] as [$score, $indicator]) {
+                $this->db->table('rubric_options')->insert([
+                    'rubric_item_id' => $itemId,
+                    'score'          => $score,
+                    'indicator'      => $indicator,
+                ]);
+            }
+        }
+
+        if ($this->db->tableExists('rubric_versions')) {
+            $version = $this->db->table('rubric_versions')->where('is_active', 1)->orderBy('id', 'DESC')->get()->getRowArray();
+            if ($version === null) {
+                $this->db->table('rubric_versions')->insert([
+                    'name'       => $rubric->name,
+                    'reference'  => $rubric->reference,
+                    'is_active'  => 1,
+                    'created_at' => date('Y-m-d H:i:s'),
+                ]);
+            } else {
+                $this->db->table('rubric_versions')->where('id', $version['id'])->update([
+                    'name'      => $rubric->name,
+                    'reference' => $rubric->reference,
+                ]);
+            }
+        }
+
+        $this->db->transComplete();
+    }
+}
