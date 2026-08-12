@@ -78,6 +78,7 @@ Seeder akun tidak mempunyai kata sandi bawaan. Jika benar-benar diperlukan untuk
 seed.adminName = 'Admin Jurnal'
 seed.adminEmail = 'admin@example.test'
 seed.adminPassword = 'gunakan-kata-sandi-kuat'
+seed.adminRole = 'admin_jurnal'
 ```
 
 Kemudian jalankan:
@@ -86,6 +87,17 @@ Kemudian jalankan:
 php spark db:seed UserSeeder
 php spark db:seed LeksikonDummySeeder
 ```
+
+Untuk membuat akun superadmin/operator production, gunakan email khusus dan ubah perannya menjadi:
+
+```ini
+seed.adminName = 'Super Admin'
+seed.adminEmail = 'superadmin@domain-anda.ac.id'
+seed.adminPassword = 'gunakan-kata-sandi-yang-kuat'
+seed.adminRole = 'super_admin'
+```
+
+Jalankan `php spark db:seed UserSeeder`, lalu hapus kembali empat variabel `seed.admin*` dari `.env` setelah akun berhasil dibuat.
 
 Jangan memasukkan `.env`, dump database, sesi, log, cache, atau unggahan pengguna ke Git.
 

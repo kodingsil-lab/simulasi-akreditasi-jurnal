@@ -25,8 +25,8 @@
         .password-toggle{width:35px;height:35px;color:#57718c}.password-toggle:hover{background:#e3edf8;color:#173f75}
         .submit-button{height:46px;margin-top:19px;border-radius:9px;background:linear-gradient(135deg,#245f9e,#173f75);box-shadow:0 8px 20px rgba(23,63,117,.2)}
         .submit-button:hover{box-shadow:0 11px 24px rgba(23,63,117,.25)}
-        .auth-divider{margin:17px 0}.secondary-link{height:43px;border-color:#b7c9dc;color:#17477d}.auth-note{margin-top:13px}
-        @media(max-width:620px){.auth-shell{width:min(100%,470px)}.auth-card{padding:21px 17px}.auth-brand{padding:12px 15px}.brand-copy span{font-size:.67rem}}
+        .auth-divider{margin:17px 0}.secondary-link{height:43px;border-color:#b7c9dc;color:#17477d}.auth-note{margin-top:13px;font-size:.64rem;white-space:nowrap}
+        @media(max-width:620px){.auth-shell{width:min(100%,470px)}.auth-card{padding:21px 17px}.auth-brand{padding:12px 15px}.brand-copy span{font-size:.67rem}.auth-note{white-space:normal}}
     </style>
 </head>
 <body>

@@ -78,3 +78,4 @@
 # seed.adminName = 'Admin Jurnal'
 # seed.adminEmail = 'admin@example.test'
 # seed.adminPassword = 'replace-with-a-strong-password'
+# seed.adminRole = 'admin_jurnal'
