@@ -23,7 +23,7 @@ run_spark() {
     set -e
     printf '%s\n' "${output}"
 
-    if [[ ${status} -ne 0 ]] || grep -Eq '^\[(Error|.*Exception)\]|^[[:space:]]*Caused by:' <<< "${output}"; then
+    if [[ ${status} -ne 0 ]] || grep -Eq '(\[Error\]|Exception\]|Caused by:|DEPLOY GAGAL)' <<< "${output}"; then
         fail "Perintah 'php spark $*' gagal. Document root lama tetap dipertahankan."
     fi
 }

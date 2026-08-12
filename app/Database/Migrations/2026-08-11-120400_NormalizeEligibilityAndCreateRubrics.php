@@ -10,8 +10,8 @@ class NormalizeEligibilityAndCreateRubrics extends Migration
     {
         // DELETE dipakai karena MySQL melarang TRUNCATE pada tabel induk
         // selama foreign key eligibility_answers -> eligibility_items ada.
-        $this->db->table('eligibility_answers')->delete();
-        $this->db->table('eligibility_items')->delete();
+        $this->db->table('eligibility_answers')->emptyTable();
+        $this->db->table('eligibility_items')->emptyTable();
 
         $items = [
             'Validitas laman jurnal',
