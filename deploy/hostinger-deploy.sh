@@ -15,6 +15,18 @@ ENV_FILE="${SHARED_DIR}/.env"
 
 log() { printf '\n[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"; }
 fail() { printf '\nDEPLOY GAGAL: %s\n' "$*" >&2; exit 1; }
+run_spark() {
+    local output status
+    set +e
+    output="$(cd "${SOURCE_DIR}" && php spark "$@" 2>&1)"
+    status=$?
+    set -e
+    printf '%s\n' "${output}"
+
+    if [[ ${status} -ne 0 ]] || grep -Eq '^\[(Error|.*Exception)\]|^[[:space:]]*Caused by:' <<< "${output}"; then
+        fail "Perintah 'php spark $*' gagal. Document root lama tetap dipertahankan."
+    fi
+}
 
 command -v git >/dev/null 2>&1 || fail "Git tidak tersedia."
 command -v php >/dev/null 2>&1 || fail "PHP CLI tidak tersedia."
@@ -65,6 +77,17 @@ else
     git -C "${SOURCE_DIR}" pull --ff-only origin "${BRANCH}"
 fi
 
+CURRENT_DEPLOY_SCRIPT="${HOME_DIR}/hostinger-deploy.sh"
+REPOSITORY_DEPLOY_SCRIPT="${SOURCE_DIR}/deploy/hostinger-deploy.sh"
+if [[ -f "${REPOSITORY_DEPLOY_SCRIPT}" ]] && ! cmp -s "${REPOSITORY_DEPLOY_SCRIPT}" "${CURRENT_DEPLOY_SCRIPT}"; then
+    cp "${REPOSITORY_DEPLOY_SCRIPT}" "${CURRENT_DEPLOY_SCRIPT}"
+    chmod 700 "${CURRENT_DEPLOY_SCRIPT}"
+    if [[ "${DEPLOY_SCRIPT_RELOADED:-0}" != "1" ]]; then
+        log "Memuat ulang script deploy terbaru"
+        exec env DEPLOY_SCRIPT_RELOADED=1 "${CURRENT_DEPLOY_SCRIPT}"
+    fi
+fi
+
 ln -sfn "${ENV_FILE}" "${SOURCE_DIR}/.env"
 mkdir -p "${SHARED_DIR}/writable/cache" "${SHARED_DIR}/writable/debugbar" "${SHARED_DIR}/writable/logs" "${SHARED_DIR}/writable/session" "${SHARED_DIR}/writable/uploads"
 
@@ -87,7 +110,8 @@ log "Memasang dependensi production"
 (cd "${SOURCE_DIR}" && composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader)
 
 log "Menjalankan migration dan sinkronisasi rubrik"
-(cd "${SOURCE_DIR}" && php spark migrate --all && php spark db:seed RubricSeeder)
+run_spark migrate --all
+run_spark db:seed RubricSeeder
 
 log "Mengaktifkan document root domain"
 find "${PUBLIC_DIR}" -mindepth 1 -maxdepth 1 ! -name '.well-known' -exec rm -rf -- {} +
