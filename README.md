@@ -127,6 +127,19 @@ Setelah disimpan, jalankan deploy kembali:
 
 Untuk pembaruan berikutnya, cukup push perubahan ke branch `main`, masuk melalui SSH, lalu jalankan kembali perintah terakhir. Script mempertahankan `.env`, sesi, log, cache, dan unggahan pengguna di folder `shared`.
 
+Jika pembaruan berhenti dan Git menampilkan `D writable/...`, pulihkan struktur source dengan perintah berikut, lalu jalankan bootstrap kembali:
+
+```bash
+cd ~/apps/simulasi-akreditasi-jurnal/source
+if [ -h writable ]; then unlink writable; fi
+mkdir -p writable
+git restore --source=HEAD --worktree -- writable
+cd ~
+curl -fsSL https://raw.githubusercontent.com/kodingsil-lab/simulasi-akreditasi-jurnal/main/deploy/hostinger-bootstrap.sh | bash
+```
+
+Perintah tersebut hanya memulihkan placeholder `writable` milik Git. Data runtime tetap berada di `~/apps/simulasi-akreditasi-jurnal/shared/writable` dan tidak terhapus.
+
 ## Keamanan dan pemisahan data
 
 Setiap akun pengelola hanya dapat mengakses jurnal yang ditugaskan kepadanya. Pembatasan diterapkan pada controller dan query, bukan hanya pada menu.

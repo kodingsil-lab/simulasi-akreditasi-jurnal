@@ -76,9 +76,16 @@ else
 
     # Runtime memakai writable bersama di luar repository. Pulihkan dahulu
     # folder bawaan Git agar fast-forward tidak terhalang oleh symlink runtime.
-    if [[ -L "${SOURCE_DIR}/writable" ]]; then
-        rm "${SOURCE_DIR}/writable"
+    if ! git -C "${SOURCE_DIR}" diff --quiet -- writable; then
+        if [[ -h "${SOURCE_DIR}/writable" ]]; then
+            unlink "${SOURCE_DIR}/writable"
+        fi
+        mkdir -p "${SOURCE_DIR}/writable"
         git -C "${SOURCE_DIR}" restore --source=HEAD --worktree -- writable
+    fi
+
+    if ! git -C "${SOURCE_DIR}" diff --quiet -- writable; then
+        fail "Folder writable pada source belum dapat dipulihkan. Jalankan pemulihan manual yang tercantum pada README."
     fi
 
     git -C "${SOURCE_DIR}" fetch origin "${BRANCH}"
