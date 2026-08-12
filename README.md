@@ -128,7 +128,7 @@ php spark db:seed UserSeeder
 
 Superadmin dapat masuk melalui halaman login yang sama. Setelah login, sistem otomatis mengarahkannya ke dashboard Operator Sistem pada `/admin`.
 
-Hapus kembali empat variabel `seed.admin*` dari `.env` setelah akun berhasil dibuat. Seeder tidak mengubah akun yang emailnya sudah terdaftar, sehingga pembuatan ulang harus menggunakan email baru atau dilakukan melalui pengelolaan database yang aman.
+Hapus kembali empat variabel `seed.admin*` dari `.env` setelah akun berhasil dibuat. Jika email tersebut sudah terdaftar, seeder akan memperbarui nama, kata sandi, status aktif, dan perannya sesuai konfigurasi `.env`.
 
 Jangan memasukkan `.env`, dump database, sesi, log, cache, atau unggahan pengguna ke Git.
 

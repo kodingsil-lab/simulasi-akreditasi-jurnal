@@ -22,18 +22,24 @@ class UserSeeder extends Seeder
             throw new RuntimeException('seed.adminRole harus berisi admin_jurnal atau super_admin.');
         }
 
-        if ($this->db->table('users')->where('email', $email)->countAllResults()) {
-            return;
-        }
-
-        $this->db->table('users')->insert([
+        $existing = $this->db->table('users')->where('email', $email)->get()->getRowArray();
+        $account = [
             'name'          => $name,
             'email'         => $email,
             'password_hash' => password_hash($password, PASSWORD_DEFAULT),
             'role'          => $role,
             'is_active'     => true,
-            'created_at'    => date('Y-m-d H:i:s'),
             'updated_at'    => date('Y-m-d H:i:s'),
+        ];
+
+        if ($existing !== null) {
+            $this->db->table('users')->where('id', $existing['id'])->update($account);
+
+            return;
+        }
+
+        $this->db->table('users')->insert($account + [
+            'created_at'    => date('Y-m-d H:i:s'),
         ]);
     }
 }
