@@ -70,7 +70,29 @@ Hasil aplikasi merupakan simulasi internal dan bukan keputusan akreditasi resmi.
 
 6. Buka `http://localhost/simulasi-akreditasi-jurnal/`, registrasikan akun, lalu tambahkan jurnal pertama.
 
-## Data demo opsional
+## Peran pengguna
+
+Aplikasi menyediakan dua peran dengan ruang kerja yang terpisah:
+
+### Admin jurnal
+
+- Dibuat melalui halaman registrasi atau seeder dengan peran `admin_jurnal`.
+- Menambah dan mengelola jurnal miliknya sendiri.
+- Mengisi Pemeriksaan Awal dan Pemeriksaan Kelayakan.
+- Melakukan evaluasi Tata Kelola dan Mutu Artikel unsur A-G.
+- Tidak dapat melihat atau mengubah jurnal milik akun lain.
+
+### Superadmin atau Operator Sistem
+
+- Menggunakan peran internal `super_admin` dan ditampilkan sebagai **Operator Sistem** pada aplikasi.
+- Melihat ringkasan jumlah admin jurnal yang aktif, nonaktif, dan baru terdaftar.
+- Melihat daftar admin jurnal beserta jumlah jurnal yang dikelola.
+- Mengaktifkan atau menonaktifkan akses akun admin jurnal.
+- Tidak mengisi, mengubah, atau mengambil alih evaluasi jurnal milik pengelola.
+
+Registrasi publik selalu menghasilkan akun `admin_jurnal`. Akun superadmin tidak dapat dibuat melalui halaman registrasi dan tidak mempunyai kredensial bawaan.
+
+## Membuat akun melalui seeder
 
 Seeder akun tidak mempunyai kata sandi bawaan. Jika benar-benar diperlukan untuk pengembangan, isi variabel berikut hanya pada `.env` lokal:
 
@@ -87,7 +109,9 @@ Kemudian jalankan:
 php spark db:seed UserSeeder
 ```
 
-Untuk membuat akun superadmin/operator production, gunakan email khusus dan ubah perannya menjadi:
+### Membuat superadmin pertama
+
+Setelah migration selesai, tambahkan konfigurasi berikut pada `.env` server. Gunakan alamat email yang belum terdaftar:
 
 ```ini
 seed.adminName = 'Super Admin'
@@ -96,7 +120,15 @@ seed.adminPassword = 'gunakan-kata-sandi-yang-kuat'
 seed.adminRole = 'super_admin'
 ```
 
-Jalankan `php spark db:seed UserSeeder`, lalu hapus kembali empat variabel `seed.admin*` dari `.env` setelah akun berhasil dibuat.
+Jalankan:
+
+```bash
+php spark db:seed UserSeeder
+```
+
+Superadmin dapat masuk melalui halaman login yang sama. Setelah login, sistem otomatis mengarahkannya ke dashboard Operator Sistem pada `/admin`.
+
+Hapus kembali empat variabel `seed.admin*` dari `.env` setelah akun berhasil dibuat. Seeder tidak mengubah akun yang emailnya sudah terdaftar, sehingga pembuatan ulang harus menggunakan email baru atau dilakukan melalui pengelolaan database yang aman.
 
 Jangan memasukkan `.env`, dump database, sesi, log, cache, atau unggahan pengguna ke Git.
 
