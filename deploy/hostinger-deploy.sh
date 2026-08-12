@@ -46,6 +46,7 @@ if [[ ! -f "${ENV_FILE}" ]]; then
     cat > "${ENV_FILE}" <<ENV
 CI_ENVIRONMENT = production
 app.baseURL = 'https://${DOMAIN}/'
+app.indexPage = ''
 app.forceGlobalSecureRequests = true
 
 database.default.hostname = localhost

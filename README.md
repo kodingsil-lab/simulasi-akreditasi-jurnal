@@ -50,6 +50,7 @@ Hasil aplikasi merupakan simulasi internal dan bukan keputusan akreditasi resmi.
    ```ini
    CI_ENVIRONMENT = development
    app.baseURL = 'http://localhost/simulasi-akreditasi-jurnal/'
+   app.indexPage = ''
 
    database.default.hostname = localhost
    database.default.database = simulasi_akreditasi_jurnal
