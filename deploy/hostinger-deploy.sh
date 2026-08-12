@@ -73,6 +73,14 @@ if [[ ! -d "${SOURCE_DIR}/.git" ]]; then
     git clone --branch "${BRANCH}" --single-branch "${REPOSITORY_URL}" "${SOURCE_DIR}"
 else
     log "Memperbarui source code"
+
+    # Runtime memakai writable bersama di luar repository. Pulihkan dahulu
+    # folder bawaan Git agar fast-forward tidak terhalang oleh symlink runtime.
+    if [[ -L "${SOURCE_DIR}/writable" ]]; then
+        rm "${SOURCE_DIR}/writable"
+        git -C "${SOURCE_DIR}" restore --source=HEAD --worktree -- writable
+    fi
+
     git -C "${SOURCE_DIR}" fetch origin "${BRANCH}"
     git -C "${SOURCE_DIR}" checkout "${BRANCH}"
     git -C "${SOURCE_DIR}" pull --ff-only origin "${BRANCH}"
