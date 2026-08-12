@@ -98,7 +98,7 @@ Peringatan mengenai driver code coverage dapat diabaikan selama seluruh test dan
 
 ## Keamanan dan pemisahan data
 
-Setiap akun pengelola hanya dapat mengakses jurnal yang ditugaskan kepadanya. Pembatasan diterapkan pada controller dan query, bukan hanya pada menu. Temuan dan rekomendasi audit internal tersedia di [AUDIT_KEAMANAN.md](AUDIT_KEAMANAN.md).
+Setiap akun pengelola hanya dapat mengakses jurnal yang ditugaskan kepadanya. Pembatasan diterapkan pada controller dan query, bukan hanya pada menu.
 
 Untuk penggunaan publik:
 

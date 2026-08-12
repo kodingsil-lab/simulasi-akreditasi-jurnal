@@ -125,6 +125,10 @@ _modules/*
 /results/
 /phpunit.xml
 
+# Documentation drafts stay local; only the root README is published.
+*.md
+!/README.md
+
 # Project-local generated artifacts
 /tmp/
 /.phpunit.cache/
